@@ -12,6 +12,7 @@ jest.mock('../src/database/db', () => ({
 
 jest.mock('../src/database/notesRepository', () => ({
   getAllNotes: jest.fn(async () => []),
+  createNote: jest.fn(async () => undefined),
 }));
 
 test('renders correctly', async () => {

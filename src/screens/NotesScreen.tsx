@@ -21,34 +21,46 @@ export default function NotesScreen({navigation}: Props) {
   useEffect(() => {
     let cancelled = false;
 
-    (async () => {
+    const loadNotes = async () => {
       await initDatabase();
       const list = await getAllNotes();
       if (!cancelled) {
         setNotes(list);
       }
-    })().catch(error => {
-      console.error('Failed to load notes', error);
+    };
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadNotes().catch(error => {
+        console.error('Failed to load notes', error);
+      });
     });
 
     return () => {
       cancelled = true;
+      unsubscribe();
     };
-  }, []);
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={notes}
         keyExtractor={item => String(item.id)}
-        renderItem={({item}) => <NoteItem note={item} />}
+        renderItem={({item}) => (
+          <Pressable
+            onPress={() => navigation.navigate('NoteDetails', {id: item.id})}>
+            <NoteItem note={item} />
+          </Pressable>
+        )}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No notes yet</Text>
         }
       />
 
-      <Pressable style={styles.addButton} onPress={() => {}}>
+      <Pressable
+        style={styles.addButton}
+        onPress={() => navigation.navigate('NoteEditor')}>
         <Text style={styles.addButtonText}>+ Add note</Text>
       </Pressable>
     </View>
