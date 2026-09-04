@@ -1,3 +1,4 @@
+import {useMemo} from 'react';
 import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import {
   DrawerContentComponentProps,
@@ -7,9 +8,12 @@ import {
   exportNotesToJson,
   importNotesFromJson,
 } from '../database/notesTransfer';
+import {ThemeColors, useAppTheme} from '../theme/ThemeContext';
 
 export function AppDrawerContent(props: DrawerContentComponentProps) {
   const {navigation} = props;
+  const {colors} = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const closeThenRun = (action: () => void | Promise<void>) => {
     navigation.closeDrawer();
@@ -29,6 +33,12 @@ export function AppDrawerContent(props: DrawerContentComponentProps) {
   const handleNewNote = () => {
     closeThenRun(() => {
       navigation.navigate('Root', {screen: 'NoteEditor'});
+    });
+  };
+
+  const handleSettings = () => {
+    closeThenRun(() => {
+      navigation.navigate('Root', {screen: 'Settings'});
     });
   };
 
@@ -70,6 +80,9 @@ export function AppDrawerContent(props: DrawerContentComponentProps) {
         <Pressable style={styles.button} onPress={handleNewNote}>
           <Text style={styles.buttonText}>New note</Text>
         </Pressable>
+        <Pressable style={styles.button} onPress={handleSettings}>
+          <Text style={styles.buttonText}>Settings</Text>
+        </Pressable>
         <Pressable style={styles.button} onPress={handleExport}>
           <Text style={styles.buttonText}>Export</Text>
         </Pressable>
@@ -81,31 +94,33 @@ export function AppDrawerContent(props: DrawerContentComponentProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    paddingTop: 12,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#111827',
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  actions: {
-    gap: 10,
-    paddingHorizontal: 16,
-  },
-  button: {
-    backgroundColor: '#111827',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    content: {
+      flex: 1,
+      paddingTop: 12,
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: colors.text,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+    },
+    actions: {
+      gap: 10,
+      paddingHorizontal: 16,
+    },
+    button: {
+      backgroundColor: colors.button,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+    },
+    buttonText: {
+      color: colors.onButton,
+      fontSize: 15,
+      fontWeight: '600',
+    },
+  });

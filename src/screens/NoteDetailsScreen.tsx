@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -9,10 +9,13 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {getNoteById, updateNote} from '../database/notesRepository';
 import {RootStackParamList} from '../navigation/AppNavigator';
+import {ThemeColors, useAppTheme} from '../theme/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NoteDetails'>;
 
 export default function NoteDetailsScreen({route, navigation}: Props) {
+  const {colors} = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [createdAt, setCreatedAt] = useState('');
@@ -55,14 +58,14 @@ export default function NoteDetailsScreen({route, navigation}: Props) {
       <TextInput
         style={styles.titleInput}
         placeholder="Title"
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor={colors.textMuted}
         value={title}
         onChangeText={setTitle}
       />
       <TextInput
         style={styles.textInput}
         placeholder="Note text"
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor={colors.textMuted}
         value={text}
         onChangeText={setText}
         multiline
@@ -83,69 +86,70 @@ export default function NoteDetailsScreen({route, navigation}: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
-    padding: 16,
-  },
-  titleInput: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 12,
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    color: '#111827',
-    marginBottom: 12,
-  },
-  metaBlock: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 16,
-  },
-  metaLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6B7280',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-    marginBottom: 4,
-  },
-  metaLabelSpaced: {
-    marginTop: 10,
-  },
-  metaValue: {
-    fontSize: 14,
-    color: '#111827',
-  },
-  saveButton: {
-    backgroundColor: '#2563EB',
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      padding: 16,
+    },
+    titleInput: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 12,
+    },
+    textInput: {
+      flex: 1,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      color: colors.text,
+      marginBottom: 12,
+    },
+    metaBlock: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginBottom: 16,
+    },
+    metaLabel: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: colors.textSecondary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.4,
+      marginBottom: 4,
+    },
+    metaLabelSpaced: {
+      marginTop: 10,
+    },
+    metaValue: {
+      fontSize: 14,
+      color: colors.text,
+    },
+    saveButton: {
+      backgroundColor: colors.primary,
+      borderRadius: 12,
+      paddingVertical: 16,
+      alignItems: 'center',
+    },
+    saveButtonText: {
+      color: colors.onPrimary,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+  });

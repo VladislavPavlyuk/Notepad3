@@ -1,19 +1,46 @@
-import {NavigationContainer} from '@react-navigation/native';
-import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
+import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import {useMemo} from 'react';
+import {StatusBar, StyleSheet} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
+import {ThemeProvider, useAppTheme} from './src/theme/ThemeContext';
+
+function ThemedApp() {
+  const {isDark, colors} = useAppTheme();
+  const navTheme = useMemo(
+    () => ({
+      ...(isDark ? DarkTheme : DefaultTheme),
+      dark: isDark,
+      colors: {
+        ...(isDark ? DarkTheme.colors : DefaultTheme.colors),
+        primary: colors.primary,
+        background: colors.background,
+        card: colors.surface,
+        text: colors.text,
+        border: colors.border,
+      },
+    }),
+    [colors, isDark],
+  );
+
+  return (
+    <>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+      <NavigationContainer theme={navTheme}>
+        <AppNavigator />
+      </NavigationContainer>
+    </>
+  );
+}
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
+        <ThemeProvider>
+          <ThemedApp />
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

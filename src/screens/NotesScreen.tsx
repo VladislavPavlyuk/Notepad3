@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NoteItem} from '../components/NoteItem';
@@ -6,11 +6,14 @@ import {initDatabase} from '../database/db';
 import {subscribeNotesChanged} from '../database/notesEvents';
 import {getAllNotes} from '../database/notesRepository';
 import {RootStackParamList} from '../navigation/AppNavigator';
+import {ThemeColors, useAppTheme} from '../theme/ThemeContext';
 import {Note} from '../types/Note';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Notes'>;
 
 export default function NotesScreen({navigation}: Props) {
+  const {colors} = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [notes, setNotes] = useState<Note[]>([]);
 
   useEffect(() => {
@@ -66,38 +69,39 @@ export default function NotesScreen({navigation}: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
-  },
-  listContent: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#9CA3AF',
-    fontSize: 15,
-    marginTop: 40,
-  },
-  addButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 28,
-    backgroundColor: '#2563EB',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 28,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    listContent: {
+      padding: 16,
+      paddingBottom: 100,
+    },
+    emptyText: {
+      textAlign: 'center',
+      color: colors.textMuted,
+      fontSize: 15,
+      marginTop: 40,
+    },
+    addButton: {
+      position: 'absolute',
+      right: 20,
+      bottom: 28,
+      backgroundColor: colors.primary,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+      borderRadius: 28,
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: {width: 0, height: 2},
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+    },
+    addButtonText: {
+      color: colors.onPrimary,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+  });
