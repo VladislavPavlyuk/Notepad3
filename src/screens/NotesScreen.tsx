@@ -1,20 +1,10 @@
 import {useEffect, useState} from 'react';
-import {
-  Alert,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NoteItem} from '../components/NoteItem';
 import {initDatabase} from '../database/db';
+import {subscribeNotesChanged} from '../database/notesEvents';
 import {getAllNotes} from '../database/notesRepository';
-import {
-  exportNotesToJson,
-  importNotesFromJson,
-} from '../database/notesTransfer';
 import {RootStackParamList} from '../navigation/AppNavigator';
 import {Note} from '../types/Note';
 
@@ -34,53 +24,24 @@ export default function NotesScreen({navigation}: Props) {
       }
     };
 
-    const unsubscribe = navigation.addListener('focus', () => {
+    const reload = () => {
       loadNotes().catch(error => {
         console.error('Failed to load notes', error);
       });
-    });
+    };
+
+    const unsubscribeFocus = navigation.addListener('focus', reload);
+    const unsubscribeNotes = subscribeNotesChanged(reload);
 
     return () => {
       cancelled = true;
-      unsubscribe();
+      unsubscribeFocus();
+      unsubscribeNotes();
     };
   }, [navigation]);
 
-  const handleExport = async () => {
-    try {
-      const saved = await exportNotesToJson();
-      if (saved) {
-        Alert.alert('Export', 'Notes exported to JSON.');
-      }
-    } catch (error) {
-      console.error('Failed to export notes', error);
-      Alert.alert('Export failed', 'Could not export notes.');
-    }
-  };
-
-  const handleImport = async () => {
-    try {
-      const imported = await importNotesFromJson();
-      if (imported) {
-        setNotes(imported);
-        Alert.alert('Import', `Imported ${imported.length} notes.`);
-      }
-    } catch (error) {
-      console.error('Failed to import notes', error);
-      Alert.alert('Import failed', 'Could not import notes from JSON.');
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <Pressable style={styles.toolbarButton} onPress={handleExport}>
-          <Text style={styles.toolbarButtonText}>Export</Text>
-        </Pressable>
-        <Pressable style={styles.toolbarButton} onPress={handleImport}>
-          <Text style={styles.toolbarButtonText}>Import</Text>
-        </Pressable>
-      </View>
       <FlatList
         data={notes}
         keyExtractor={item => String(item.id)}
@@ -109,24 +70,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F4F6',
-  },
-  toolbar: {
-    flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 4,
-  },
-  toolbarButton: {
-    backgroundColor: '#111827',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-  },
-  toolbarButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
   },
   listContent: {
     padding: 16,

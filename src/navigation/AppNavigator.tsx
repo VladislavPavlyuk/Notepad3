@@ -1,4 +1,10 @@
+import {
+  createDrawerNavigator,
+  DrawerToggleButton,
+} from '@react-navigation/drawer';
+import {NavigatorScreenParams} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {AppDrawerContent} from '../components/AppDrawerContent';
 import NoteDetailsScreen from '../screens/NoteDetailsScreen';
 import NoteEditorScreen from '../screens/NoteEditorScreen';
 import NotesScreen from '../screens/NotesScreen';
@@ -9,15 +15,25 @@ export type RootStackParamList = {
   NoteDetails: {id: number};
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+export type RootDrawerParamList = {
+  Root: NavigatorScreenParams<RootStackParamList>;
+};
 
-export default function AppNavigator() {
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
+
+function RootStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Notes"
         component={NotesScreen}
-        options={{title: 'Notes'}}
+        options={{
+          title: 'Notes',
+          headerLeft: ({tintColor}) => (
+            <DrawerToggleButton tintColor={tintColor} />
+          ),
+        }}
       />
       <Stack.Screen
         name="NoteEditor"
@@ -30,5 +46,19 @@ export default function AppNavigator() {
         options={{title: 'Edit note'}}
       />
     </Stack.Navigator>
+  );
+}
+
+export default function AppNavigator() {
+  return (
+    <Drawer.Navigator
+      drawerContent={props => <AppDrawerContent {...props} />}
+      screenOptions={{
+        headerShown: false,
+        swipeEnabled: true,
+        swipeEdgeWidth: 56,
+      }}>
+      <Drawer.Screen name="Root" component={RootStack} />
+    </Drawer.Navigator>
   );
 }

@@ -1,6 +1,7 @@
 import type {Scalar} from '@op-engineering/op-sqlite';
 import {Note} from '../types/Note';
 import {getDb} from './db';
+import {notifyNotesChanged} from './notesEvents';
 
 export type NoteDraft = {
   title: string;
@@ -81,4 +82,5 @@ export async function replaceAllNotes(notes: Note[]): Promise<void> {
       );
     }
   });
+  notifyNotesChanged();
 }

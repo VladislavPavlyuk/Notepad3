@@ -20,6 +20,10 @@ jest.mock('../src/database/notesTransfer', () => ({
   importNotesFromJson: jest.fn(async () => null),
 }));
 
+jest.mock('react-native-reanimated', () =>
+  require('react-native-reanimated/mock'),
+);
+
 test('renders correctly', async () => {
   await ReactTestRenderer.act(() => {
     ReactTestRenderer.create(<App />);
