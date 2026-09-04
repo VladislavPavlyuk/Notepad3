@@ -24,6 +24,10 @@ export type ThemeColors = {
   button: string;
   onButton: string;
   switchTrackOff: string;
+  ripple: string;
+  overlay: string;
+  shadow: string;
+  selection: string;
 };
 
 export const lightColors: ThemeColors = {
@@ -38,6 +42,10 @@ export const lightColors: ThemeColors = {
   button: '#111827',
   onButton: '#FFFFFF',
   switchTrackOff: '#D1D5DB',
+  ripple: 'rgba(17, 24, 39, 0.12)',
+  overlay: 'rgba(17, 24, 39, 0.35)',
+  shadow: '#000000',
+  selection: 'rgba(37, 99, 235, 0.25)',
 };
 
 export const darkColors: ThemeColors = {
@@ -52,6 +60,10 @@ export const darkColors: ThemeColors = {
   button: '#374151',
   onButton: '#F9FAFB',
   switchTrackOff: '#4B5563',
+  ripple: 'rgba(249, 250, 251, 0.12)',
+  overlay: 'rgba(0, 0, 0, 0.6)',
+  shadow: '#000000',
+  selection: 'rgba(59, 130, 246, 0.35)',
 };
 
 type ThemeContextValue = {

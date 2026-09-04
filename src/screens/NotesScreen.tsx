@@ -50,6 +50,7 @@ export default function NotesScreen({navigation}: Props) {
         keyExtractor={item => String(item.id)}
         renderItem={({item}) => (
           <Pressable
+            android_ripple={{color: colors.ripple}}
             onPress={() => navigation.navigate('NoteDetails', {id: item.id})}>
             <NoteItem note={item} />
           </Pressable>
@@ -61,7 +62,8 @@ export default function NotesScreen({navigation}: Props) {
       />
 
       <Pressable
-        style={styles.addButton}
+        style={({pressed}) => [styles.addButton, pressed && styles.pressed]}
+        android_ripple={{color: colors.ripple}}
         onPress={() => navigation.navigate('NoteEditor')}>
         <Text style={styles.addButtonText}>+ Add note</Text>
       </Pressable>
@@ -94,10 +96,13 @@ const createStyles = (colors: ThemeColors) =>
       paddingHorizontal: 20,
       borderRadius: 28,
       elevation: 4,
-      shadowColor: '#000',
+      shadowColor: colors.shadow,
       shadowOffset: {width: 0, height: 2},
       shadowOpacity: 0.2,
       shadowRadius: 4,
+    },
+    pressed: {
+      opacity: 0.85,
     },
     addButtonText: {
       color: colors.onPrimary,

@@ -26,7 +26,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 function RootStack() {
-  const {colors} = useAppTheme();
+  const {isDark, colors} = useAppTheme();
 
   return (
     <Stack.Navigator
@@ -36,6 +36,9 @@ function RootStack() {
         headerTitleStyle: {color: colors.text},
         headerShadowVisible: false,
         contentStyle: {backgroundColor: colors.background},
+        statusBarStyle: isDark ? 'light' : 'dark',
+        statusBarBackgroundColor: colors.surface,
+        navigationBarColor: colors.background,
       }}>
       <Stack.Screen
         name="Notes"
@@ -78,6 +81,7 @@ export default function AppNavigator() {
         swipeEdgeWidth: 56,
         drawerStyle: {backgroundColor: colors.background},
         sceneStyle: {backgroundColor: colors.background},
+        overlayColor: colors.overlay,
       }}>
       <Drawer.Screen name="Root" component={RootStack} />
     </Drawer.Navigator>

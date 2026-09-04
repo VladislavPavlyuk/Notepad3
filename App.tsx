@@ -1,6 +1,6 @@
 import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {useMemo} from 'react';
-import {StatusBar, StyleSheet} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
@@ -19,24 +19,28 @@ function ThemedApp() {
         card: colors.surface,
         text: colors.text,
         border: colors.border,
+        notification: colors.primary,
       },
     }),
     [colors, isDark],
   );
 
   return (
-    <>
-      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+    <View style={[styles.fill, {backgroundColor: colors.background}]}>
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.surface}
+      />
       <NavigationContainer theme={navTheme}>
         <AppNavigator />
       </NavigationContainer>
-    </>
+    </View>
   );
 }
 
 function App() {
   return (
-    <GestureHandlerRootView style={styles.root}>
+    <GestureHandlerRootView style={styles.fill}>
       <SafeAreaProvider>
         <ThemeProvider>
           <ThemedApp />
@@ -47,7 +51,7 @@ function App() {
 }
 
 const styles = StyleSheet.create({
-  root: {
+  fill: {
     flex: 1,
   },
 });

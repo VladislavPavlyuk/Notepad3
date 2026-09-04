@@ -71,22 +71,40 @@ export function AppDrawerContent(props: DrawerContentComponentProps) {
   };
 
   return (
-    <DrawerContentScrollView {...props} contentContainerStyle={styles.content}>
+    <DrawerContentScrollView
+      {...props}
+      style={styles.drawer}
+      contentContainerStyle={styles.content}>
       <Text style={styles.title}>Notepad</Text>
       <View style={styles.actions}>
-        <Pressable style={styles.button} onPress={handleNotes}>
+        <Pressable
+          style={({pressed}) => [styles.button, pressed && styles.pressed]}
+          android_ripple={{color: colors.ripple}}
+          onPress={handleNotes}>
           <Text style={styles.buttonText}>Notes</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={handleNewNote}>
+        <Pressable
+          style={({pressed}) => [styles.button, pressed && styles.pressed]}
+          android_ripple={{color: colors.ripple}}
+          onPress={handleNewNote}>
           <Text style={styles.buttonText}>New note</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={handleSettings}>
+        <Pressable
+          style={({pressed}) => [styles.button, pressed && styles.pressed]}
+          android_ripple={{color: colors.ripple}}
+          onPress={handleSettings}>
           <Text style={styles.buttonText}>Settings</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={handleExport}>
+        <Pressable
+          style={({pressed}) => [styles.button, pressed && styles.pressed]}
+          android_ripple={{color: colors.ripple}}
+          onPress={handleExport}>
           <Text style={styles.buttonText}>Export</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={handleImport}>
+        <Pressable
+          style={({pressed}) => [styles.button, pressed && styles.pressed]}
+          android_ripple={{color: colors.ripple}}
+          onPress={handleImport}>
           <Text style={styles.buttonText}>Import</Text>
         </Pressable>
       </View>
@@ -96,6 +114,10 @@ export function AppDrawerContent(props: DrawerContentComponentProps) {
 
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
+    drawer: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
     content: {
       flex: 1,
       paddingTop: 12,
@@ -117,10 +139,14 @@ const createStyles = (colors: ThemeColors) =>
       paddingVertical: 12,
       paddingHorizontal: 16,
       borderRadius: 10,
+      overflow: 'hidden',
     },
     buttonText: {
       color: colors.onButton,
       fontSize: 15,
       fontWeight: '600',
+    },
+    pressed: {
+      opacity: 0.85,
     },
   });

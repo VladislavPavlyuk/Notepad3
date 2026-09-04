@@ -1,12 +1,7 @@
 import {useMemo, useState} from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ThemedTextInput} from '../components/ThemedTextInput';
 import {createNote} from '../database/notesRepository';
 import {RootStackParamList} from '../navigation/AppNavigator';
 import {ThemeColors, useAppTheme} from '../theme/ThemeContext';
@@ -36,23 +31,24 @@ export default function NoteEditorScreen({navigation}: Props) {
 
   return (
     <View style={styles.container}>
-      <TextInput
+      <ThemedTextInput
         style={styles.titleInput}
         placeholder="Title"
-        placeholderTextColor={colors.textMuted}
         value={title}
         onChangeText={setTitle}
       />
-      <TextInput
+      <ThemedTextInput
         style={styles.textInput}
         placeholder="Note text"
-        placeholderTextColor={colors.textMuted}
         value={text}
         onChangeText={setText}
         multiline
         textAlignVertical="top"
       />
-      <Pressable style={styles.saveButton} onPress={handleSave}>
+      <Pressable
+        style={({pressed}) => [styles.saveButton, pressed && styles.pressed]}
+        android_ripple={{color: colors.ripple}}
+        onPress={handleSave}>
         <Text style={styles.saveButtonText}>Save</Text>
       </Pressable>
     </View>
@@ -100,5 +96,8 @@ const createStyles = (colors: ThemeColors) =>
       color: colors.onPrimary,
       fontSize: 16,
       fontWeight: '600',
+    },
+    pressed: {
+      opacity: 0.85,
     },
   });
