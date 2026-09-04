@@ -68,3 +68,17 @@ export async function updateNote(
 export async function deleteNote(id: number): Promise<void> {
   await getDb().execute('DELETE FROM notes WHERE id = ?', [id]);
 }
+
+export async function replaceAllNotes(notes: Note[]): Promise<void> {
+  const db = getDb();
+  await db.transaction(async tx => {
+    await tx.execute('DELETE FROM notes');
+    for (const note of notes) {
+      await tx.execute(
+        `INSERT INTO notes (id, title, text, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?)`,
+        [note.id, note.title, note.text, note.createdAt, note.updatedAt],
+      );
+    }
+  });
+}

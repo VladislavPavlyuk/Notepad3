@@ -15,6 +15,11 @@ jest.mock('../src/database/notesRepository', () => ({
   createNote: jest.fn(async () => undefined),
 }));
 
+jest.mock('../src/database/notesTransfer', () => ({
+  exportNotesToJson: jest.fn(async () => false),
+  importNotesFromJson: jest.fn(async () => null),
+}));
+
 test('renders correctly', async () => {
   await ReactTestRenderer.act(() => {
     ReactTestRenderer.create(<App />);
