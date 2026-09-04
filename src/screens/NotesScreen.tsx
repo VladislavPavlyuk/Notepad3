@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   FlatList,
   Pressable,
@@ -8,14 +8,33 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NoteItem} from '../components/NoteItem';
-import {mockNotes} from '../data/mockNotes';
+import {initDatabase} from '../database/db';
+import {getAllNotes} from '../database/notesRepository';
 import {RootStackParamList} from '../navigation/AppNavigator';
 import {Note} from '../types/Note';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Notes'>;
 
 export default function NotesScreen({navigation}: Props) {
-  const [notes, setNotes] = useState<Note[]>(mockNotes);
+  const [notes, setNotes] = useState<Note[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      await initDatabase();
+      const list = await getAllNotes();
+      if (!cancelled) {
+        setNotes(list);
+      }
+    })().catch(error => {
+      console.error('Failed to load notes', error);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
